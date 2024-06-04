@@ -1,0 +1,30 @@
+<?php
+
+function getFlightData($fcode,$fno,$year,$month,$date) {
+    $url = 'https://www.flightstats.com/v2/flight-tracker/'.$fcode.'/'.$fno.'?year='.$year.'&month='.$month.'&date='.$date;
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+    'Accept-Language: en-US,en;q=0.5',
+    'Connection: keep-alive',
+    'Cache-Control: max-age=0',
+    'Upgrade-Insecure-Requests: 1'
+  ));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    // Hypothetical parsing logic (replace with actual parsing if needed)
+    $jsonStringStartIndex = strpos($response, '__NEXT_DATA__ = ') + 15; // Length of '__NEXT_DATA__ = '
+    $jsonStringEndIndex = strpos($response, 'module={');
+    $jsonString = substr($response, $jsonStringStartIndex, $jsonStringEndIndex - $jsonStringStartIndex);
+    return json_decode($jsonString, true);
+}
+    echo "<pre>";
+    $data = getFlightData();
+    $flight = $data['props']['initialState']['flightTracker']['flight'];
+    print_r($flight);
+
+?>
