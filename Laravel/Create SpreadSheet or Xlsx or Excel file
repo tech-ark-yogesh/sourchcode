@@ -1,0 +1,89 @@
+<?php
+
+/* Package Name: PhpSpreadsheet (phpoffice/phpspreadsheet) */
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Carbon\Carbon;
+
+class YourController extends Controller
+{
+    /**
+     * Export student information to Excel.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function exportSpreadsheet(Request $request)
+    {
+        // Retrieve data (replace with your actual data retrieval method)
+        $data = $request->all();
+
+        // Create a new PhpSpreadsheet instance
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add headers with bold font
+        $boldFontStyle = [
+            'font' => [
+                'bold' => true,
+            ],
+        ];
+
+        $sheet->getStyle('A1:I1')->applyFromArray($boldFontStyle);
+        $sheet->setCellValue('A1', 'First (Given) Names');
+        $sheet->setCellValue('B1', 'Last Name');
+        $sheet->setCellValue('C1', 'Gender');
+        $sheet->setCellValue('D1', 'Date of Birth');
+        $sheet->setCellValue('E1', 'First (Prenom)');
+        $sheet->setCellValue('F1', 'Middle (Deuxième prénom)');
+        $sheet->setCellValue('G1', 'Surname (Nom de famille)');
+        $sheet->setCellValue('H1', 'Passport Number');
+        $sheet->setCellValue('I1', 'Expiry Date');
+
+        // Add student data
+        $row = 2; // Start from row 2 (after headers)
+        foreach ($data as $item) {
+            $first_name = isset($item['first_name']) ? ucfirst(strtolower(trim($item['first_name']))) : '-';
+            $last_name = isset($item['last_name']) ? ucfirst(strtolower(trim($item['last_name']))) : '-';
+            $gender = isset($item['gender']) ? ucfirst(strtolower(trim($item['gender']))) : '-';
+            $dob = isset($item['dob']) ? Carbon::parse($item['dob'])->format('m/d/Y') : '-';
+            $passport_name = isset($item['passport_name']) ? ucfirst(strtolower(trim($item['passport_name']))) : '-';
+            $passport_mid_name = isset($item['passport_mid_name']) ? ucfirst(strtolower(trim($item['passport_mid_name']))) : '-';
+            $passport_last_name = isset($item['passport_last_name']) ? ucfirst(strtolower(trim($item['passport_last_name']))) : '-';
+            $passport_number = isset($item['passport_number']) ? trim($item['passport_number']) : '-';
+            $passport_expire_date = isset($item['passport_expire_date']) ? Carbon::parse($item['passport_expire_date'])->format('m/d/Y') : '-';
+
+            $sheet->setCellValue('A'.$row, $first_name);
+            $sheet->setCellValue('B'.$row, $last_name);
+            $sheet->setCellValue('C'.$row, $gender);
+            $sheet->setCellValue('D'.$row, $dob);
+            $sheet->setCellValue('E'.$row, $passport_name);
+            $sheet->setCellValue('F'.$row, $passport_mid_name);
+            $sheet->setCellValue('G'.$row, $passport_last_name);
+            $sheet->setCellValue('H'.$row, $passport_number);
+            $sheet->setCellValue('I'.$row, $passport_expire_date);
+
+            // Adjust column widths based on content length
+            foreach(range('A','I') as $column) {
+                $sheet->getColumnDimension($column)->setAutoSize(true);
+            }
+
+            $row++;
+        }
+
+        // Save the spreadsheet to a file
+        $writer = new Xlsx($spreadsheet);
+        $currentDate = Carbon::now()->format('mdYhis');
+        $filename = 'Student-information_' . $currentDate . '.xlsx';
+        $writer->save(storage_path('app/public/' . $filename));
+
+        // Get the public URL of the saved file
+        $url = env('APP_URL') . '/storage/' . $filename;
+
+        // Return the URL in the API response
+        return response()->json([
+            'message' => 'Student information exported successfully',
+            'url' => $url
+        ], 200);
+    }
+}
