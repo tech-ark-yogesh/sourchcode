@@ -1,0 +1,25 @@
+#NVM Enviment Start  Code
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+
+#PHP verion change Command
+
+sudo update-alternatives --set php /usr/bin/php8.1
+sudo update-alternatives --set phar /usr/bin/phar8.1
+sudo update-alternatives --set phar.phar /usr/bin/phar.phar8.1
+
+
+sudo update-alternatives --set php /usr/bin/php7.2
+sudo update-alternatives --set phar /usr/bin/phar7.2
+sudo update-alternatives --set phar.phar /usr/bin/phar.phar7.2
+
+sudo nano /etc/php/8.1/apache2/php.ini
+
+#mongoDB Command
+sudo systemctl start mongod
+sudo systemctl status mongod
+sudo systemctl restart mongod
+sudo systemctl stop mongod
