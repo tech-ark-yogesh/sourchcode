@@ -7,6 +7,10 @@ export NVM_DIR="$HOME/.nvm"
 
 #PHP verion change Command
 
+sudo update-alternatives --config php
+sudo update-alternatives --config phar
+sudo update-alternatives --config phar.phar
+
 sudo update-alternatives --set php /usr/bin/php8.1
 sudo update-alternatives --set phar /usr/bin/phar8.1
 sudo update-alternatives --set phar.phar /usr/bin/phar.phar8.1
@@ -23,3 +27,14 @@ sudo systemctl start mongod
 sudo systemctl status mongod
 sudo systemctl restart mongod
 sudo systemctl stop mongod
+
+
+
+npm install --legacy-peer-deps
+
+
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+
+sudo systemctl disable docker.service
+sudo systemctl disable containerd.service
