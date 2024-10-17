@@ -38,3 +38,8 @@ sudo systemctl enable containerd.service
 
 sudo systemctl disable docker.service
 sudo systemctl disable containerd.service
+
+#when we take the pull and many files added and want to check which files have changes and which code updates then fire the below command 
+
+git diff HEAD@{1} HEAD
+
