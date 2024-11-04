@@ -1,5 +1,8 @@
 <?php
 
+pm2 for php artisan queue work
+pm2 start "/usr/local/bin/php artisan queue:work --daemon --tries=3 --sleep=3 --delay=5 --timeout=60 --queue=default" --name "queue-worker" --max-memory-restart 250M
+
 // https://dzone.com/articles/10-super-useful-php-snippets
 // https://www.wpbeginner.com/wp-tutorials/25-extremely-useful-tricks-for-the-wordpress-functions-file/
 // https://wordpress.stackexchange.com/questions/1567/best-collection-of-code-for-your-functions-php-file?page=1&tab=votes#tab-top
